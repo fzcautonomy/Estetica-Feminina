@@ -1,0 +1,11 @@
+# Sistema
+desktop.ini
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.code-workspace
+
+# Configurações locais do Claude
+.claude/settings.local.json

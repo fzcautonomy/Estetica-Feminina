@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#F4A7B9" />
+  <meta name="description" content="Salão de Beleza Feminino — Cílios, Unhas, Sobrancelhas e muito mais. Agende seu horário agora!" />
+  <title>Studio Bella — Salão de Beleza Feminino</title>
+
+  <!-- PERSONALIZE: Troque o nome do salão nos meta tags acima -->
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Critical inline CSS for above-the-fold -->
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Poppins',sans-serif;background:#FFF8F5;color:#3a2a2a;overflow-x:hidden}
+    #splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#F4A7B9,#F5E6DA,#C9A86C);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease,transform .8s ease}
+    #splash.hide{opacity:0;transform:scale(1.05);pointer-events:none}
+    .splash-logo{font-family:'Playfair Display',serif;font-size:2.5rem;color:#fff;text-shadow:0 2px 20px rgba(201,168,108,.6);animation:pulse-glow 2s ease-in-out infinite}
+    @keyframes pulse-glow{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(255,255,255,.4))}50%{transform:scale(1.06);filter:drop-shadow(0 0 24px rgba(255,255,255,.9))}}
+  </style>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+
+  <!-- Scroll progress bar -->
+  <div id="scroll-progress"></div>
+</head>
+<body>
+
+<!-- ============================================================
+     SPLASH SCREEN
+============================================================ -->
+<div id="splash" role="status" aria-label="Carregando...">
+  <canvas id="particles-canvas"></canvas>
+  <div class="splash-content">
+    <div class="splash-logo-wrap">
+      <div class="splash-shine"></div>
+      <h1 class="splash-logo">Studio Bella</h1>
+      <!-- PERSONALIZE: Troque "Studio Bella" pelo nome do seu salão -->
+      <p class="splash-tagline">Realçando sua beleza natural</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CURSOR CUSTOMIZADO (desktop)
+============================================================ -->
+<div id="custom-cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- ============================================================
+     SCROLL PROGRESS BAR
+============================================================ -->
+<div id="scroll-bar"></div>
+
+<!-- ============================================================
+     PULL-TO-REFRESH
+============================================================ -->
+<div id="ptr-loader" aria-hidden="true">
+  <div class="ptr-flower">🌸</div>
+  <span>Atualizando...</span>
+</div>
+
+<!-- ============================================================
+     DARK/LIGHT TOGGLE
+============================================================ -->
+<button id="theme-toggle" aria-label="Alternar tema" title="Alternar tema">
+  <span class="theme-icon">🌙</span>
+</button>
+
+<!-- ============================================================
+     HEADER + NAV
+============================================================ -->
+<header id="site-header" role="banner">
+  <div class="header-inner">
+    <a href="#hero" class="header-logo" aria-label="Studio Bella — início">
+      Studio Bella
+    </a>
+    <button id="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="main-nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="main-nav" role="navigation" aria-label="Menu principal">
+      <ul>
+        <li><a href="#servicos" data-nav>Serviços</a></li>
+        <li><a href="#agendamento" data-nav>Agendar</a></li>
+        <li><a href="#portfolio" data-nav>Portfólio</a></li>
+        <li><a href="#depoimentos" data-nav>Depoimentos</a></li>
+        <li><a href="#sobre" data-nav>Sobre</a></li>
+        <li><a href="#contato" data-nav>Contato</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section id="hero" class="section-hero" aria-label="Página inicial">
+  <div class="hero-parallax-bg" id="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content reveal">
+    <div class="hero-badge">✨ Beleza & Sofisticação</div>
+    <h1 class="hero-title">
+      Studio<br /><em>Bella</em>
+      <!-- PERSONALIZE: Troque pelo nome do seu salão -->
+    </h1>
+    <p class="hero-tagline">Realçando sua beleza natural<br />com arte, carinho e precisão</p>
+    <!-- PERSONALIZE: Troque a tagline acima -->
+    <a href="#agendamento" class="btn-primary shimmer-btn" aria-label="Ir para agendamento">
+      <span>Agendar Agora</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="hero-scroll-hint" aria-hidden="true">
+    <div class="scroll-dot"></div>
+    <span>Role para baixo</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     SERVIÇOS
+============================================================ -->
+<section id="servicos" class="section-services" aria-label="Serviços">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">O que oferecemos</span>
+      <h2 class="section-title">Nossos Serviços</h2>
+      <p class="section-sub">Cada detalhe cuidado com amor e expertise</p>
+    </div>
+
+    <div class="services-grid" role="list">
+
+      <article class="service-card glass-card reveal" role="listitem" data-service="cilios" tabindex="0">
+        <div class="card-icon" aria-hidden="true">👁️</div>
+        <h3>Extensão de Cílios</h3>
+        <p>Volume e naturalidade que duram semanas, realçando seu olhar único.</p>
+        <div class="card-price">A partir de <strong>R$ 120</strong></div>
+        <!-- PERSONALIZE: Ajuste o preço acima -->
+        <button class="card-btn" aria-label="Ver detalhes de Extensão de Cílios">Ver detalhes</button>
+      </article>
+
+      <article class="service-card glass-card reveal" role="listitem" data-service="unhas" tabindex="0">
+        <div class="card-icon" aria-hidden="true">💅</div>
+        <h3>Nail Designer</h3>
+        <p>Arte nas pontas dos dedos — gel, acrigel, fibra e nail art exclusiva.</p>
+        <div class="card-price">A partir de <strong>R$ 80</strong></div>
+        <!-- PERSONALIZE: Ajuste o preço acima -->
+        <button class="card-btn" aria-label="Ver detalhes de Nail Designer">Ver detalhes</button>
+      </article>
+
+      <article class="service-card glass-card reveal" role="listitem" data-service="sobrancelhas" tabindex="0">
+        <div class="card-icon" aria-hidden="true">✨</div>
+        <h3>Design de Sobrancelhas</h3>
+        <p>Henna, micropigmentação e design que enquadra perfeitamente seu rosto.</p>
+        <div class="card-price">A partir de <strong>R$ 45</strong></div>
+        <!-- PERSONALIZE: Ajuste o preço acima -->
+        <button class="card-btn" aria-label="Ver detalhes de Design de Sobrancelhas">Ver detalhes</button>
+      </article>
+
+      <article class="service-card glass-card reveal" role="listitem" data-service="lash" tabindex="0">
+        <div class="card-icon" aria-hidden="true">🌟</div>
+        <h3>Lash Lifting</h3>
+        <p>Cílios naturais curvados e alongados por até 8 semanas. Sem cola, sem extensão.</p>
+        <div class="card-price">A partir de <strong>R$ 90</strong></div>
+        <!-- PERSONALIZE: Ajuste o preço acima -->
+        <button class="card-btn" aria-label="Ver detalhes de Lash Lifting">Ver detalhes</button>
+      </article>
+
+      <article class="service-card glass-card reveal" role="listitem" data-service="manicure" tabindex="0">
+        <div class="card-icon" aria-hidden="true">🌸</div>
+        <h3>Manicure & Pedicure</h3>
+        <p>Tratamento completo e esmaltação com produtos de alta qualidade.</p>
+        <div class="card-price">A partir de <strong>R$ 35</strong></div>
+        <!-- PERSONALIZE: Ajuste o preço acima -->
+        <button class="card-btn" aria-label="Ver detalhes de Manicure e Pedicure">Ver detalhes</button>
+      </article>
+
+      <article class="service-card glass-card reveal" role="listitem" data-service="depilacao" tabindex="0">
+        <div class="card-icon" aria-hidden="true">🌺</div>
+        <h3>Depilação</h3>
+        <p>Cera quente, fria ou linha — pele lisa e macia com conforto máximo.</p>
+        <div class="card-price">A partir de <strong>R$ 25</strong></div>
+        <!-- PERSONALIZE: Ajuste o preço acima -->
+        <button class="card-btn" aria-label="Ver detalhes de Depilação">Ver detalhes</button>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MODAL DE SERVIÇO
+============================================================ -->
+<div id="service-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal-box glass-card">
+    <button class="modal-close" aria-label="Fechar modal">✕</button>
+    <div class="modal-icon" id="modal-icon" aria-hidden="true"></div>
+    <h3 id="modal-title"></h3>
+    <p id="modal-desc"></p>
+    <ul id="modal-details" class="modal-list"></ul>
+    <div id="modal-price" class="modal-price"></div>
+    <a href="#agendamento" class="btn-primary shimmer-btn modal-cta">
+      <span>Agendar Este Serviço</span>
+    </a>
+  </div>
+</div>
+
+<!-- ============================================================
+     AGENDAMENTO
+============================================================ -->
+<section id="agendamento" class="section-booking" aria-label="Agendamento">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">Reserva rápida</span>
+      <h2 class="section-title">Agendar Horário</h2>
+      <p class="section-sub">Preencha o formulário e confirme via WhatsApp</p>
+    </div>
+
+    <div class="booking-card glass-card reveal">
+      <form id="booking-form" novalidate>
+
+        <div class="form-group">
+          <label for="f-nome">Seu nome completo <span aria-hidden="true">*</span></label>
+          <input type="text" id="f-nome" name="nome" placeholder="Ex: Maria Silva" autocomplete="name" required />
+          <span class="field-error" id="err-nome" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-wpp">WhatsApp <span aria-hidden="true">*</span></label>
+          <input type="tel" id="f-wpp" name="whatsapp" placeholder="(11) 98607-5848" autocomplete="tel" required />
+          <span class="field-error" id="err-wpp" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-servico">Serviço desejado <span aria-hidden="true">*</span></label>
+          <select id="f-servico" name="servico" required>
+            <option value="">Escolha um serviço...</option>
+            <option value="Extensão de Cílios">👁️ Extensão de Cílios</option>
+            <option value="Nail Designer">💅 Nail Designer</option>
+            <option value="Design de Sobrancelhas">✨ Design de Sobrancelhas</option>
+            <option value="Lash Lifting">🌟 Lash Lifting</option>
+            <option value="Manicure e Pedicure">🌸 Manicure &amp; Pedicure</option>
+            <option value="Depilação">🌺 Depilação</option>
+          </select>
+          <span class="field-error" id="err-servico" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-data">Data preferida <span aria-hidden="true">*</span></label>
+          <input type="date" id="f-data" name="data" required />
+          <span class="field-error" id="err-data" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label>Horário desejado <span aria-hidden="true">*</span></label>
+          <div class="time-slots" id="time-slots" role="group" aria-label="Selecione o horário">
+            <!-- Gerado via JS -->
+          </div>
+          <input type="hidden" id="f-horario" name="horario" required />
+          <span class="field-error" id="err-horario" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-obs">Observações (opcional)</label>
+          <textarea id="f-obs" name="observacoes" placeholder="Ex: primeira vez, tenho alergia a látex..." rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary btn-full shimmer-btn" id="btn-agendar">
+          <span>Confirmar via WhatsApp</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.847L0 24l6.335-1.51A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.371l-.36-.213-3.728.888.933-3.638-.234-.374A9.818 9.818 0 1121.818 12a9.818 9.818 0 01-9.818 9.818z"/></svg>
+        </button>
+
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TELA DE CONFIRMAÇÃO (confetes)
+============================================================ -->
+<div id="confirmation-screen" hidden aria-live="polite">
+  <canvas id="confetti-canvas"></canvas>
+  <div class="confirm-box glass-card">
+    <div class="confirm-icon">🎉</div>
+    <h2>Solicitação Enviada!</h2>
+    <p>Sua mensagem foi aberta no WhatsApp.<br />Aguarde a confirmação do seu horário!</p>
+    <button id="confirm-back" class="btn-primary">Voltar ao início</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     PORTFÓLIO
+============================================================ -->
+<section id="portfolio" class="section-portfolio" aria-label="Portfólio de trabalhos">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">Nosso trabalho</span>
+      <h2 class="section-title">Portfólio</h2>
+      <p class="section-sub">Resultados que falam por si mesmos</p>
+    </div>
+
+    <div class="portfolio-filters reveal" role="tablist" aria-label="Filtrar portfólio">
+      <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">Todos</button>
+      <button class="filter-btn" data-filter="cilios" role="tab" aria-selected="false">Cílios</button>
+      <button class="filter-btn" data-filter="unhas" role="tab" aria-selected="false">Unhas</button>
+      <button class="filter-btn" data-filter="sobrancelhas" role="tab" aria-selected="false">Sobrancelhas</button>
+    </div>
+
+    <div class="portfolio-grid" id="portfolio-grid" role="list">
+      <!-- Gerado via JS -->
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     LIGHTBOX
+============================================================ -->
+<div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Visualizar imagem">
+  <button class="lb-close" aria-label="Fechar">✕</button>
+  <button class="lb-prev" aria-label="Anterior">‹</button>
+  <button class="lb-next" aria-label="Próximo">›</button>
+  <div class="lb-content">
+    <div class="lb-img-wrap" id="lb-img-wrap"></div>
+    <p class="lb-caption" id="lb-caption"></p>
+  </div>
+</div>
+
+<!-- ============================================================
+     DEPOIMENTOS
+============================================================ -->
+<section id="depoimentos" class="section-testimonials" aria-label="Depoimentos de clientes">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">Amor das clientes</span>
+      <h2 class="section-title">Depoimentos</h2>
+      <p class="section-sub">O que nossas clientes dizem</p>
+    </div>
+
+    <div class="testimonials-track-wrap">
+      <div class="testimonials-track" id="testimonials-track" role="list">
+        <!-- Gerado via JS -->
+      </div>
+    </div>
+
+    <div class="testimonials-dots" id="testimonials-dots" aria-label="Navegação de depoimentos"></div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SOBRE
+============================================================ -->
+<section id="sobre" class="section-about" aria-label="Sobre a profissional">
+  <div class="container">
+    <div class="about-inner reveal">
+      <div class="about-photo-wrap">
+        <div class="about-photo-placeholder" aria-label="Foto da profissional">
+          <!-- PERSONALIZE: Troque pelo <img src="assets/profissional.jpg" alt="..."> -->
+          <div class="photo-initials">SB</div>
+        </div>
+        <div class="about-badge-cert">
+          <span>🏅</span> Certificada
+        </div>
+      </div>
+      <div class="about-content">
+        <span class="section-badge">Sobre mim</span>
+        <h2 class="section-title">Conheça a Artista</h2>
+        <!-- PERSONALIZE: Troque o nome e bio abaixo -->
+        <p class="about-bio">
+          Olá! Sou <strong>Sabrina Bella</strong>, especialista em beleza feminina com paixão por transformar olhares e realçar a autoestima de cada cliente. Cada atendimento é único, feito com dedicação e muito carinho.
+        </p>
+        <!-- PERSONALIZE: Troque a bio acima -->
+
+        <div class="stats-grid" aria-label="Estatísticas">
+          <div class="stat-item">
+            <span class="stat-number" data-target="500">0</span><span>+</span>
+            <span class="stat-label">Clientes Atendidas</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="3">0</span><span> anos</span>
+            <span class="stat-label">de Experiência</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="98">0</span><span>%</span>
+            <span class="stat-label">Satisfação</span>
+          </div>
+        </div>
+
+        <div class="certifications">
+          <div class="cert-item"><span aria-hidden="true">🏅</span> Certificada em Extensão de Cílios</div>
+          <div class="cert-item"><span aria-hidden="true">🏅</span> Nail Designer Profissional</div>
+          <div class="cert-item"><span aria-hidden="true">🏅</span> Micropigmentação SENAC</div>
+          <!-- PERSONALIZE: Troque as certificações acima -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTATO & LOCALIZAÇÃO
+============================================================ -->
+<section id="contato" class="section-contact" aria-label="Contato e localização">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">Fale conosco</span>
+      <h2 class="section-title">Localização & Contato</h2>
+    </div>
+
+    <div class="contact-grid reveal">
+
+      <div class="contact-card glass-card">
+        <div class="contact-icon" aria-hidden="true">📍</div>
+        <h3>Endereço</h3>
+        <!-- PERSONALIZE: Troque o endereço abaixo -->
+        <p>Rua das Flores, 123 — Sala 4<br />Jardim Primavera — São Paulo / SP<br />CEP: 01234-567</p>
+        <a
+          href="https://maps.google.com/?q=Rua+das+Flores+123+São+Paulo"
+          target="_blank"
+          rel="noopener"
+          class="btn-outline"
+          aria-label="Abrir no Google Maps"
+        >Abrir no Maps</a>
+        <!-- PERSONALIZE: Troque a URL do Maps acima pelo endereço real -->
+      </div>
+
+      <div class="contact-card glass-card">
+        <div class="contact-icon" aria-hidden="true">🕐</div>
+        <h3>Horários</h3>
+        <!-- PERSONALIZE: Troque os horários abaixo -->
+        <ul class="hours-list">
+          <li><span>Seg – Sex</span><strong>09h – 19h</strong></li>
+          <li><span>Sábado</span><strong>09h – 17h</strong></li>
+          <li><span>Domingo</span><strong>Fechado</strong></li>
+        </ul>
+      </div>
+
+      <div class="contact-card glass-card">
+        <div class="contact-icon" aria-hidden="true">💬</div>
+        <h3>Redes Sociais</h3>
+        <div class="social-links">
+          <!-- PERSONALIZE: Troque os links das redes sociais abaixo -->
+          <a href="https://wa.me/5511986075848" target="_blank" rel="noopener" class="social-btn wpp" aria-label="WhatsApp">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.847L0 24l6.335-1.51A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.371l-.36-.213-3.728.888.933-3.638-.234-.374A9.818 9.818 0 1121.818 12a9.818 9.818 0 01-9.818 9.818z"/></svg>
+            WhatsApp
+          </a>
+          <a href="https://instagram.com/studiobella" target="_blank" rel="noopener" class="social-btn insta" aria-label="Instagram">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </a>
+          <a href="https://tiktok.com/@studiobella" target="_blank" rel="noopener" class="social-btn tiktok" aria-label="TikTok">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.93a8.16 8.16 0 004.77 1.52V7a4.85 4.85 0 01-1-.31z"/></svg>
+            TikTok
+          </a>
+        </div>
+        <!-- PERSONALIZE: Troque os links acima pelos seus perfis reais -->
+      </div>
+
+    </div>
+
+    <div class="cta-whatsapp reveal">
+      <a href="https://wa.me/5511986075848" target="_blank" rel="noopener" class="btn-primary btn-wpp-big shimmer-btn" aria-label="Enviar mensagem no WhatsApp">
+        <!-- PERSONALIZE: Troque o número acima pelo seu WhatsApp real -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.847L0 24l6.335-1.51A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.371l-.36-.213-3.728.888.933-3.638-.234-.374A9.818 9.818 0 1121.818 12a9.818 9.818 0 01-9.818 9.818z"/></svg>
+        <span>Chamar no WhatsApp</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer id="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-inner">
+      <a href="#hero" class="footer-logo" aria-label="Studio Bella — topo">Studio Bella</a>
+      <!-- PERSONALIZE: Troque o nome acima -->
+      <nav class="footer-nav" aria-label="Links do rodapé">
+        <a href="#servicos">Serviços</a>
+        <a href="#agendamento">Agendar</a>
+        <a href="#portfolio">Portfólio</a>
+        <a href="#sobre">Sobre</a>
+      </nav>
+      <div class="footer-social">
+        <a href="https://wa.me/5511986075848" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.847L0 24l6.335-1.51A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.371l-.36-.213-3.728.888.933-3.638-.234-.374A9.818 9.818 0 1121.818 12a9.818 9.818 0 01-9.818 9.818z"/></svg>
+        </a>
+        <a href="https://instagram.com/studiobella" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://tiktok.com/@studiobella" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.93a8.16 8.16 0 004.77 1.52V7a4.85 4.85 0 01-1-.31z"/></svg>
+        </a>
+      </div>
+    </div>
+    <p class="footer-copy">Feito com 💗 para realçar sua beleza &mdash; &copy; <span id="footer-year"></span> Studio Bella</p>
+  </div>
+</footer>
+
+<!-- ============================================================
+     FLOATING ACTION BUTTON
+============================================================ -->
+<a href="https://wa.me/5511986075848" id="fab" class="fab" target="_blank" rel="noopener" aria-label="Chamar no WhatsApp">
+  <!-- PERSONALIZE: Troque o número acima pelo seu WhatsApp real -->
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.847L0 24l6.335-1.51A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.371l-.36-.213-3.728.888.933-3.638-.234-.374A9.818 9.818 0 1121.818 12a9.818 9.818 0 01-9.818 9.818z"/></svg>
+</a>
+
+<!-- ============================================================
+     VOLTAR AO TOPO
+============================================================ -->
+<button id="back-to-top" aria-label="Voltar ao topo" hidden>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="js/main.js" defer></script>
+<script src="js/agendamento.js" defer></script>
+<script src="js/portfolio.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#F4A7B9"/>
+      <stop offset="50%"  stop-color="#F5E6DA"/>
+      <stop offset="100%" stop-color="#C9A86C"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#g1)"/>
+  <text x="256" y="200" text-anchor="middle" font-family="Georgia, serif"
+        font-size="80" font-style="italic" font-weight="700"
+        fill="white" opacity="0.95">Studio</text>
+  <text x="256" y="300" text-anchor="middle" font-family="Georgia, serif"
+        font-size="90" font-style="italic" font-weight="700"
+        fill="white" opacity="0.95">Bella</text>
+  <text x="256" y="360" text-anchor="middle" font-family="Arial, sans-serif"
+        font-size="28" font-weight="400" fill="white" opacity="0.7"
+        letter-spacing="6">BELEZA</text>
+  <!-- Estrelinhas decorativas -->
+  <text x="80"  y="120" font-size="32" fill="rgba(255,255,255,0.5)">✨</text>
+  <text x="400" y="120" font-size="32" fill="rgba(255,255,255,0.5)">✨</text>
+  <text x="80"  y="400" font-size="24" fill="rgba(255,255,255,0.4)">🌸</text>
+  <text x="410" y="400" font-size="24" fill="rgba(255,255,255,0.4)">🌸</text>
+</svg>

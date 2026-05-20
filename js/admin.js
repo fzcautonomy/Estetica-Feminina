@@ -352,7 +352,10 @@ const AdminApp = (() => {
           const { id, cat: c } = fileInput.dataset;
           const gallery = BellaDB.getGallery();
           const item = (gallery[c] || []).find(it => it.id === id);
-          if (item) item.img = base64;
+          if (item) {
+            item.img = base64;
+            BellaDB.setGalleryCategory(c, gallery[c]);
+          }
 
           const row = fileInput.closest('.gal-item');
           if (row) {

@@ -44,6 +44,8 @@ const AdminApp = (() => {
   function showDashboard() {
     document.getElementById('login-screen').hidden    = true;
     document.getElementById('dashboard-screen').hidden = false;
+    document.body.style.overflow = '';
+    window.scrollTo(0, 0);
     initTabs();
     openTab('agenda');
 

@@ -66,6 +66,7 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
   body { cursor: none; }
   #custom-cursor {
     position: fixed;
+    left: -100px; top: -100px;
     width: 14px; height: 14px;
     border-radius: 50%;
     background: var(--rose);
@@ -73,10 +74,10 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
     z-index: 9998;
     transform: translate(-50%,-50%);
     transition: transform 0.08s ease, opacity 0.3s;
-    mix-blend-mode: multiply;
   }
   #cursor-trail {
     position: fixed;
+    left: -100px; top: -100px;
     width: 36px; height: 36px;
     border-radius: 50%;
     border: 1.5px solid var(--gold);

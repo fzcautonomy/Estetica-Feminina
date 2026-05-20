@@ -8,6 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/admin.css" />
+  <script>
+    (function(){
+      var t = localStorage.getItem('bella-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body class="admin-body">
 <div id="custom-cursor"></div>
@@ -48,6 +55,9 @@
         <button class="admin-tab-btn" data-tab="galeria" role="tab">🖼️ Galeria</button>
         <button class="admin-tab-btn" data-tab="config"  role="tab">⚙️ Config</button>
       </nav>
+      <button id="theme-toggle" class="adm-btn adm-btn-outline" aria-label="Alternar tema" title="Modo claro/escuro">
+        <span class="theme-icon">🌙</span>
+      </button>
       <button id="logout-btn" class="adm-btn adm-btn-outline">Sair</button>
     </div>
   </header>

@@ -36,24 +36,26 @@ const ServiceGallery = (() => {
     activeCategory = category;
     originRect = rect;
 
+    // Pre-render content while overlay is off-screen (prevents "tap empty → close" race)
+    renderContent(category);
+    document.body.style.overflow = 'hidden';
+
     if (isMobile()) {
       /* Mobile: slide-up from bottom */
-      overlay.style.cssText = 'transform:translateY(100%);opacity:1;';
+      overlay.style.transition = 'none';
+      overlay.style.transform = 'translateY(100%)';
+      overlay.style.opacity = '1';
       overlay.hidden = false;
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        overlay.style.cssText = 'transform:translateY(0);opacity:1;transition:transform .45s cubic-bezier(.4,0,.2,1);';
-      }));
-      setTimeout(() => renderContent(category), 460);
+      /* Force reflow so browser commits the initial position before animating */
+      void overlay.offsetHeight;
+      overlay.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
+      overlay.style.transform = 'translateY(0)';
     } else {
       /* Desktop: expand from card */
-      overlay.style.cssText = `top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;border-radius:16px;opacity:0;`;
+      overlay.style.cssText = `top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;border-radius:16px;opacity:0;transition:none;`;
       overlay.hidden = false;
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        overlay.style.cssText = 'top:0;left:0;width:100vw;height:100dvh;border-radius:0;opacity:1;';
-      }));
-      setTimeout(() => renderContent(category), 390);
+      void overlay.offsetHeight;
+      overlay.style.cssText = 'top:0;left:0;width:100vw;height:100dvh;border-radius:0;opacity:1;';
     }
   }
 
@@ -63,7 +65,8 @@ const ServiceGallery = (() => {
     if (content) content.style.opacity = '0';
 
     if (isMobile()) {
-      overlay.style.cssText = 'transform:translateY(100%);opacity:1;transition:transform .4s cubic-bezier(.4,0,.2,1);';
+      overlay.style.transition = 'transform .4s cubic-bezier(.4,0,.2,1)';
+      overlay.style.transform = 'translateY(100%)';
     } else {
       overlay.style.cssText = `top:${originRect?.top ?? 50}px;left:${originRect?.left ?? 50}px;width:${originRect?.width ?? 0}px;height:${originRect?.height ?? 0}px;border-radius:16px;opacity:0;`;
     }
@@ -126,7 +129,7 @@ const ServiceGallery = (() => {
       overlay.addEventListener('touchend', e => {
         dragging = false;
         const dy = e.changedTouches[0].clientY - startY;
-        if (dy > 90) { close(); } else { overlay.style.transform = ''; overlay.style.transition = 'transform .3s ease'; }
+        if (dy > 90) { close(); } else { overlay.style.transform = 'translateY(0)'; overlay.style.transition = 'transform .3s ease'; }
       });
     }
 
@@ -142,7 +145,7 @@ const ServiceGallery = (() => {
       });
     });
 
-    /* Fade in */
+    /* Fade in content */
     requestAnimationFrame(() => {
       const c = overlay.querySelector('.sg-content');
       if (c) c.style.opacity = '1';

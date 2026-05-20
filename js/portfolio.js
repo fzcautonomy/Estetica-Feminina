@@ -6,9 +6,6 @@
 
 'use strict';
 
-const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
-
 /* ── Dados do portfólio ──────────────────────────────────── */
 /*
    PERSONALIZE: Troque os gradientes por src reais:

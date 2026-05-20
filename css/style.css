@@ -1218,6 +1218,7 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 .slot-x { font-size: 0.7rem; margin-left: 2px; opacity: 0.6; }
 
 /* ── GALERIA FULLSCREEN (mobile-first) ───────────────────── */
+.sg-overlay[hidden] { display: none; }
 .sg-overlay {
   position: fixed; inset: 0; z-index: 9999;
   background: var(--light-bg);

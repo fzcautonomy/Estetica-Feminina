@@ -20,8 +20,7 @@ const ServiceGallery = (() => {
     overlay = document.getElementById('sg-overlay');
     if (!overlay) return;
 
-    /* Fechar */
-    overlay.querySelector('.sg-close').addEventListener('click', close);
+    /* Fechar — .sg-close é criado pelo renderContent(), não existe no init */
     overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) close(); });
 

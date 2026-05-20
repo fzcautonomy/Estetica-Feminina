@@ -81,7 +81,7 @@ const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
 /* ── Custom Cursor (desktop) ─────────────────────────────── */
 (function initCursor() {
-  if (window.matchMedia('(hover: none)').matches) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   const cursor = $('#custom-cursor');
   const trail  = $('#cursor-trail');
   if (!cursor || !trail) return;

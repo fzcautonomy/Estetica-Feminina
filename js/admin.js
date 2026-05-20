@@ -298,7 +298,14 @@ const AdminApp = (() => {
             <div class="gal-item-fields">
               <input type="text" placeholder="Nome" value="${esc(item.name)}" data-field="name" data-id="${item.id}" data-cat="${cat}" />
               <input type="number" placeholder="Preço R$" value="${item.price}" data-field="price" data-id="${item.id}" data-cat="${cat}" min="0" />
-              <input type="text" placeholder="URL da foto (cole o link)" value="${esc(item.img||'')}" data-field="img" data-id="${item.id}" data-cat="${cat}" />
+              <div class="gal-img-row">
+                <input type="text" placeholder="URL da foto (cole o link)" value="${item.img && item.img.startsWith('data:') ? '' : esc(item.img||'')}" data-field="img" data-id="${item.id}" data-cat="${cat}" class="gal-url-input" />
+                <label class="adm-btn adm-btn-sm gal-upload-label" title="Anexar imagem do computador">
+                  📎 Anexar
+                  <input type="file" accept="image/*" class="gal-file-input" data-id="${item.id}" data-cat="${cat}" style="display:none" />
+                </label>
+              </div>
+              ${item.img && item.img.startsWith('data:') ? `<span class="gal-file-name">✓ Imagem anexada</span>` : ''}
               <textarea placeholder="Descrição" data-field="desc" data-id="${item.id}" data-cat="${cat}">${esc(item.desc)}</textarea>
               <button class="adm-btn adm-btn-danger adm-btn-xs" data-del-item="${item.id}" data-cat="${cat}">🗑 Remover</button>
             </div>
@@ -326,6 +333,43 @@ const AdminApp = (() => {
               : `<div class="gal-no-img">📷<br/>Sem foto</div>`;
           }
         }
+      });
+    });
+
+    /* Upload de arquivo → base64 */
+    content.querySelectorAll('.gal-file-input').forEach(fileInput => {
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+          showToast('Imagem muito grande. Use arquivos até 2MB.');
+          fileInput.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const base64 = ev.target.result;
+          const { id, cat: c } = fileInput.dataset;
+          const gallery = BellaDB.getGallery();
+          const item = (gallery[c] || []).find(it => it.id === id);
+          if (item) item.img = base64;
+
+          const row = fileInput.closest('.gal-item');
+          if (row) {
+            const preview = row.querySelector('.gal-item-preview');
+            if (preview) preview.innerHTML = `<img src="${base64}" alt="" />`;
+            const urlInput = row.querySelector('.gal-url-input');
+            if (urlInput) urlInput.value = '';
+            let label = row.querySelector('.gal-file-name');
+            if (!label) {
+              label = document.createElement('span');
+              label.className = 'gal-file-name';
+              fileInput.closest('.gal-img-row').insertAdjacentElement('afterend', label);
+            }
+            label.textContent = `✓ ${file.name}`;
+          }
+        };
+        reader.readAsDataURL(file);
       });
     });
 

@@ -201,6 +201,10 @@
   box-shadow: 0 0 0 3px rgba(244,167,185,0.2);
 }
 .gal-actions { display: flex; gap: 12px; margin-top: 8px; }
+.gal-img-row { display: flex; gap: 8px; align-items: center; }
+.gal-img-row .gal-url-input { flex: 1; }
+.gal-upload-label { cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+.gal-file-name { font-size: 0.75rem; color: #5aab5a; }
 
 /* ── Config ────────────────────────────────────────────── */
 .config-sections { display: flex; flex-direction: column; gap: 20px; }

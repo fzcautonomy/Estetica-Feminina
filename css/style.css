@@ -1085,3 +1085,231 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 }
 [data-theme="dark"] .time-slot { background: rgba(40,28,34,0.8); color: var(--gray); }
 [data-theme="dark"] #site-footer { background: #0f0a0d; }
+
+/* ── FIX: Dark mode header ────────────────────────────────
+   O gradiente rose/nude/gold fica claro demais em fundo escuro.
+   No dark mode, usamos gradiente mais sóbrio e translúcido.
+──────────────────────────────────────────────────────────── */
+[data-theme="dark"] #site-header {
+  background: linear-gradient(135deg, rgba(80,30,50,0.95) 0%, rgba(26,18,24,0.98) 50%, rgba(60,45,15,0.95) 100%);
+  animation: none;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,168,108,0.2);
+}
+[data-theme="dark"] #site-header .header-logo { color: var(--gold); }
+[data-theme="dark"] #site-header #menu-btn span { background: var(--nude); }
+[data-theme="dark"] #site-header:not(.scrolled) #main-nav a { color: var(--nude); }
+@media (min-width: 768px) {
+  [data-theme="dark"] #site-header:not(.scrolled) #main-nav a { color: var(--nude); }
+  [data-theme="dark"] #site-header:not(.scrolled) #main-nav a:hover { color: var(--gold); border-color: var(--gold); }
+}
+[data-theme="dark"] #site-header.scrolled {
+  background: rgba(26,18,24,0.95);
+  border-bottom: 1px solid rgba(201,168,108,0.2);
+}
+
+/* ── CALENDÁRIO (BellaCalendar) ──────────────────────────── */
+.booking-calendar-wrap { margin-top: 4px; }
+
+.bc-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  backdrop-filter: blur(12px);
+}
+.bc-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.bc-title {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dark);
+  text-transform: capitalize;
+}
+.bc-nav {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--rose), var(--gold));
+  color: #fff; font-size: 1.3rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: none;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.bc-nav:hover { transform: scale(1.1); box-shadow: 0 4px 12px rgba(244,167,185,0.4); }
+
+.bc-weekdays {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  margin-bottom: 6px;
+}
+.bc-weekdays span {
+  text-align: center; font-size: 0.72rem; font-weight: 600;
+  color: var(--gray); padding: 4px 0;
+}
+.bc-grid {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  gap: 3px;
+}
+.bc-day {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: 0.82rem; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: none;
+  background: none; color: var(--dark);
+  position: relative;
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+.bc-day:hover:not(.bc-disabled) {
+  background: rgba(244,167,185,0.2);
+  transform: scale(1.1);
+}
+.bc-day.bc-today {
+  font-weight: 700;
+  border: 1.5px solid var(--rose);
+  color: var(--rose);
+}
+.bc-day.bc-selected {
+  background: linear-gradient(135deg, var(--rose), var(--gold));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(244,167,185,0.45);
+  transform: scale(1.12);
+}
+.bc-day.bc-disabled {
+  color: rgba(122,106,106,0.3);
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+.bc-day.bc-empty { background: none; cursor: default; }
+.bc-dot {
+  position: absolute; top: 2px; right: 2px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #fff;
+  font-size: 0.55rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.bc-day.bc-has-apts { color: var(--gold-dark); font-weight: 700; }
+
+/* Data selecionada label */
+.selected-date-display {
+  font-size: 0.85rem; font-weight: 600;
+  color: var(--gold-dark);
+  margin-top: 8px;
+  min-height: 20px;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.selected-date-display.visible { opacity: 1; transform: none; }
+
+/* Slots hint */
+.slots-hint {
+  font-size: 0.82rem; color: var(--gray);
+  padding: 12px 0;
+}
+.slots-empty {
+  font-size: 0.82rem; color: #e05a5a;
+  padding: 8px 0;
+}
+.slot-x { font-size: 0.7rem; margin-left: 2px; opacity: 0.6; }
+
+/* ── GALERIA FULLSCREEN ──────────────────────────────────── */
+.sg-overlay {
+  position: fixed; z-index: 6000;
+  overflow-y: auto;
+  background: var(--light-bg);
+  transition: top .38s cubic-bezier(.4,0,.2,1),
+              left .38s cubic-bezier(.4,0,.2,1),
+              width .38s cubic-bezier(.4,0,.2,1),
+              height .38s cubic-bezier(.4,0,.2,1),
+              border-radius .38s cubic-bezier(.4,0,.2,1),
+              opacity .38s ease;
+}
+.sg-content {
+  display: flex; flex-direction: column;
+  min-height: 100%;
+  transition: opacity 0.3s ease;
+}
+.sg-header {
+  position: relative;
+  padding: 48px 24px 32px;
+  text-align: center;
+}
+.sg-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(8px);
+  color: #fff; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: none;
+  transition: background var(--transition);
+}
+.sg-close:hover { background: rgba(255,255,255,0.5); }
+.sg-icon { font-size: 3rem; display: block; margin-bottom: 8px; }
+.sg-title { font-family: var(--font-head); font-size: 2rem; color: #fff; font-weight: 700; margin-bottom: 8px; }
+.sg-sub { color: rgba(255,255,255,0.8); font-size: 0.95rem; }
+.sg-body {
+  flex: 1;
+  padding: 24px 16px 48px;
+  max-width: 900px; margin: 0 auto; width: 100%;
+}
+.sg-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 480px) { .sg-grid { grid-template-columns: repeat(2,1fr); } }
+@media (min-width: 768px) { .sg-grid { grid-template-columns: repeat(3,1fr); } }
+
+.sg-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+  animation: sg-card-in 0.5s ease backwards;
+}
+@keyframes sg-card-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
+.sg-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(244,167,185,0.2); }
+.sg-card-media { aspect-ratio: 4/3; overflow: hidden; }
+.sg-card-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sg-card-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+}
+.sg-card-info { padding: 16px; }
+.sg-card-name { font-family: var(--font-head); font-size: 1rem; margin-bottom: 6px; }
+.sg-card-desc { font-size: 0.82rem; color: var(--gray); line-height: 1.6; margin-bottom: 14px; }
+.sg-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sg-card-price { font-weight: 700; color: var(--gold-dark); font-size: 0.95rem; }
+.sg-book-btn {
+  padding: 8px 16px; border-radius: 40px;
+  background: linear-gradient(135deg, var(--rose), var(--gold));
+  color: #fff; font-size: 0.8rem; font-weight: 600;
+  border: none; cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+  position: relative; overflow: hidden;
+}
+.sg-book-btn:hover { transform: scale(1.05); box-shadow: 0 4px 14px rgba(244,167,185,0.45); }
+.sg-empty {
+  text-align: center; padding: 60px 24px; color: var(--gray);
+}
+.sg-empty span { font-size: 3rem; display: block; margin-bottom: 16px; opacity: 0.5; }
+.sg-empty a { color: var(--gold-dark); text-decoration: underline; }
+
+/* ── Dark mode overrides for new components ──────────────── */
+[data-theme="dark"] .bc-wrap { background: rgba(40,28,34,0.9); }
+[data-theme="dark"] .bc-title,
+[data-theme="dark"] .bc-day:not(.bc-disabled):not(.bc-selected) { color: var(--nude); }
+[data-theme="dark"] .sg-overlay { background: var(--light-bg); }
+[data-theme="dark"] .sg-card { background: rgba(40,28,34,0.8); }
+[data-theme="dark"] .sg-card-name { color: var(--nude); }

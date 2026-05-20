@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin — Studio Bella</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+<!-- ── Login Screen ─────────────────────────────────── -->
+<div id="login-screen" class="admin-login-wrap">
+  <div class="admin-login-card glass-card">
+    <div class="login-logo">
+      <span class="login-icon">🌸</span>
+      <h1>Studio Bella</h1>
+      <p>Painel Administrativo</p>
+    </div>
+    <form id="admin-login-form">
+      <div class="form-group">
+        <label for="admin-pass">Senha de acesso</label>
+        <input type="password" id="admin-pass" placeholder="••••••••" autocomplete="current-password" required />
+        <span id="login-err" class="field-error"></span>
+      </div>
+      <button type="submit" class="btn-primary btn-full shimmer-btn">
+        <span>Entrar</span>
+      </button>
+      <a href="index.html" class="login-back">← Voltar ao site</a>
+    </form>
+  </div>
+</div>
+
+<!-- ── Dashboard ────────────────────────────────────── -->
+<div id="dashboard-screen" hidden>
+
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <a href="index.html" class="admin-logo" title="Ver site">
+        🌸 Studio Bella <span>Admin</span>
+      </a>
+      <nav class="admin-tabs" role="tablist">
+        <button class="admin-tab-btn" data-tab="agenda"  role="tab">📅 Agenda</button>
+        <button class="admin-tab-btn" data-tab="galeria" role="tab">🖼️ Galeria</button>
+        <button class="admin-tab-btn" data-tab="config"  role="tab">⚙️ Config</button>
+      </nav>
+      <button id="logout-btn" class="adm-btn adm-btn-outline">Sair</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+
+    <!-- AGENDA -->
+    <section id="panel-agenda" class="admin-panel" hidden>
+      <!-- renderizado pelo admin.js -->
+      <p class="apts-hint">Carregando agenda...</p>
+    </section>
+
+    <!-- GALERIA -->
+    <section id="panel-galeria" class="admin-panel" hidden>
+      <!-- renderizado pelo admin.js -->
+    </section>
+
+    <!-- CONFIG -->
+    <section id="panel-config" class="admin-panel" hidden>
+      <!-- renderizado pelo admin.js -->
+    </section>
+
+  </main>
+</div>
+
+<!-- ── Modal: adicionar agendamento ──────────────────── -->
+<div id="add-apt-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="m-apt-title">
+  <div class="modal-box glass-card">
+    <button class="modal-close" aria-label="Fechar">✕</button>
+    <h3 id="m-apt-title">Novo Agendamento</h3>
+    <p id="m-date-label" style="color:var(--gold-dark);font-weight:600;margin-bottom:16px"></p>
+    <form id="apt-form">
+      <div class="form-group">
+        <label>Nome da cliente</label>
+        <input type="text" name="nome" placeholder="Ex: Maria Silva" required />
+      </div>
+      <div class="form-group">
+        <label>WhatsApp</label>
+        <input type="tel" name="wpp" placeholder="(11) 99999-9999" />
+      </div>
+      <div class="form-group">
+        <label>Serviço</label>
+        <select name="servico" required>
+          <option value="">Escolha...</option>
+          <option>Extensão de Cílios</option>
+          <option>Nail Designer</option>
+          <option>Design de Sobrancelhas</option>
+          <option>Lash Lifting</option>
+          <option>Manicure e Pedicure</option>
+          <option>Depilação</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Horário</label>
+        <select name="horario" id="m-horario" required>
+          <option value="">Carregando...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea name="obs" rows="2" placeholder="Opcional..."></textarea>
+      </div>
+      <button type="submit" class="btn-primary btn-full">Confirmar Agendamento</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

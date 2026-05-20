@@ -199,20 +199,10 @@
 </section>
 
 <!-- ============================================================
-     MODAL DE SERVIÇO
+     GALERIA DE SERVIÇOS (overlay fullscreen)
 ============================================================ -->
-<div id="service-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
-  <div class="modal-box glass-card">
-    <button class="modal-close" aria-label="Fechar modal">✕</button>
-    <div class="modal-icon" id="modal-icon" aria-hidden="true"></div>
-    <h3 id="modal-title"></h3>
-    <p id="modal-desc"></p>
-    <ul id="modal-details" class="modal-list"></ul>
-    <div id="modal-price" class="modal-price"></div>
-    <a href="#agendamento" class="btn-primary shimmer-btn modal-cta">
-      <span>Agendar Este Serviço</span>
-    </a>
-  </div>
+<div id="sg-overlay" class="sg-overlay" hidden aria-modal="true" role="dialog" aria-label="Galeria do serviço">
+  <!-- Conteúdo injetado via services-gallery.js -->
 </div>
 
 <!-- ============================================================
@@ -256,17 +246,18 @@
         </div>
 
         <div class="form-group">
-          <label for="f-data">Data preferida <span aria-hidden="true">*</span></label>
-          <input type="date" id="f-data" name="data" required />
+          <label>Data preferida <span aria-hidden="true">*</span></label>
+          <div id="booking-calendar" class="booking-calendar-wrap"></div>
+          <p id="selected-date-display" class="selected-date-display"></p>
           <span class="field-error" id="err-data" role="alert"></span>
         </div>
 
         <div class="form-group">
-          <label>Horário desejado <span aria-hidden="true">*</span></label>
+          <label>Horário disponível <span aria-hidden="true">*</span></label>
           <div class="time-slots" id="time-slots" role="group" aria-label="Selecione o horário">
-            <!-- Gerado via JS -->
+            <p class="slots-hint">← Primeiro escolha a data acima</p>
           </div>
-          <input type="hidden" id="f-horario" name="horario" required />
+          <input type="hidden" id="f-horario" name="horario" />
           <span class="field-error" id="err-horario" role="alert"></span>
         </div>
 
@@ -526,9 +517,12 @@
 </button>
 
 <!-- Scripts -->
+<script src="js/db.js"></script>
+<script src="js/calendar.js"></script>
 <script src="js/main.js" defer></script>
 <script src="js/agendamento.js" defer></script>
 <script src="js/portfolio.js" defer></script>
+<script src="js/services-gallery.js" defer></script>
 
 </body>
 </html>

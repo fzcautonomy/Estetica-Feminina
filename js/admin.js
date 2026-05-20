@@ -520,4 +520,8 @@ const AdminApp = (() => {
   return { init };
 })();
 
-document.addEventListener('DOMContentLoaded', AdminApp.init);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', AdminApp.init);
+} else {
+  AdminApp.init();
+}

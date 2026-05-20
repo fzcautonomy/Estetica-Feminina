@@ -299,13 +299,13 @@ const AdminApp = (() => {
               <input type="text" placeholder="Nome" value="${esc(item.name)}" data-field="name" data-id="${item.id}" data-cat="${cat}" />
               <input type="number" placeholder="Preço R$" value="${item.price}" data-field="price" data-id="${item.id}" data-cat="${cat}" min="0" />
               <div class="gal-img-row">
-                <input type="text" placeholder="URL da foto (cole o link)" value="${item.img && item.img.startsWith('data:') ? '' : esc(item.img||'')}" data-field="img" data-id="${item.id}" data-cat="${cat}" class="gal-url-input" />
+                <input type="text" placeholder="URL da foto (ou anexe abaixo)" value="${esc(item.img||'')}" data-field="img" data-id="${item.id}" data-cat="${cat}" class="gal-url-input" />
                 <label class="adm-btn adm-btn-sm gal-upload-label" title="Anexar imagem do computador">
                   📎 Anexar
                   <input type="file" accept="image/*" class="gal-file-input" data-id="${item.id}" data-cat="${cat}" style="display:none" />
                 </label>
               </div>
-              ${item.img && item.img.startsWith('data:') ? `<span class="gal-file-name">✓ Imagem anexada</span>` : ''}
+              ${item.img && !item.img.startsWith('data:') && item.img.startsWith('http') ? `<span class="gal-file-name">✓ Foto na nuvem</span>` : ''}
               <textarea placeholder="Descrição" data-field="desc" data-id="${item.id}" data-cat="${cat}">${esc(item.desc)}</textarea>
               <button class="adm-btn adm-btn-danger adm-btn-xs" data-del-item="${item.id}" data-cat="${cat}">🗑 Remover</button>
             </div>
@@ -336,43 +336,67 @@ const AdminApp = (() => {
       });
     });
 
-    /* Upload de arquivo → base64 */
+    /* Upload de arquivo → Cloudinary */
     content.querySelectorAll('.gal-file-input').forEach(fileInput => {
-      fileInput.addEventListener('change', () => {
+      fileInput.addEventListener('change', async () => {
         const file = fileInput.files[0];
         if (!file) return;
-        if (file.size > 2 * 1024 * 1024) {
-          showToast('Imagem muito grande. Use arquivos até 2MB.');
-          fileInput.value = '';
-          return;
+
+        const row        = fileInput.closest('.gal-item');
+        const { id, cat: c } = fileInput.dataset;
+        const uploadLabel = fileInput.closest('.gal-upload-label');
+
+        let nameLabel = row?.querySelector('.gal-file-name');
+        if (!nameLabel) {
+          nameLabel = document.createElement('span');
+          nameLabel.className = 'gal-file-name';
+          fileInput.closest('.gal-img-row').insertAdjacentElement('afterend', nameLabel);
         }
-        const reader = new FileReader();
-        reader.onload = ev => {
-          const base64 = ev.target.result;
-          const { id, cat: c } = fileInput.dataset;
+
+        nameLabel.textContent = '⏳ Enviando...';
+        nameLabel.style.color = 'var(--gold-dark)';
+        if (uploadLabel) uploadLabel.style.opacity = '0.6';
+
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'estetica-feminina');
+
+          const res = await fetch('https://api.cloudinary.com/v1_1/derwc335n/image/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          if (!res.ok) throw new Error('upload falhou');
+          const data = await res.json();
+          const url  = data.secure_url;
+
+          /* Salva URL no localStorage imediatamente */
           const gallery = BellaDB.getGallery();
           const item = (gallery[c] || []).find(it => it.id === id);
           if (item) {
-            item.img = base64;
+            item.img = url;
             BellaDB.setGalleryCategory(c, gallery[c]);
           }
 
-          const row = fileInput.closest('.gal-item');
+          /* Atualiza preview e campo URL */
           if (row) {
             const preview = row.querySelector('.gal-item-preview');
-            if (preview) preview.innerHTML = `<img src="${base64}" alt="" />`;
+            if (preview) preview.innerHTML = `<img src="${url}" alt="" />`;
             const urlInput = row.querySelector('.gal-url-input');
-            if (urlInput) urlInput.value = '';
-            let label = row.querySelector('.gal-file-name');
-            if (!label) {
-              label = document.createElement('span');
-              label.className = 'gal-file-name';
-              fileInput.closest('.gal-img-row').insertAdjacentElement('afterend', label);
-            }
-            label.textContent = `✓ ${file.name}`;
+            if (urlInput) urlInput.value = url;
           }
-        };
-        reader.readAsDataURL(file);
+
+          nameLabel.textContent = '✓ Foto enviada!';
+          nameLabel.style.color = '#5aab5a';
+          showToast('Foto enviada com sucesso! ✓');
+        } catch {
+          nameLabel.textContent = '✗ Erro ao enviar. Tente novamente.';
+          nameLabel.style.color = '#e05a5a';
+          showToast('Erro ao enviar. Verifique a conexão.');
+        } finally {
+          if (uploadLabel) uploadLabel.style.opacity = '1';
+          fileInput.value = '';
+        }
       });
     });
 

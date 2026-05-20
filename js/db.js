@@ -12,6 +12,7 @@ const BellaDB = {
     BLOCKED_DAYS:  'bella-blocked-days',
     CLOSED_WDAYS:  'bella-closed-weekdays',
     GALLERY:       'bella-service-gallery',
+    PORTFOLIO:     'bella-portfolio',
     ADMIN_HASH:    'bella-admin-hash',
     WORK_START:    'bella-work-start',
     WORK_END:      'bella-work-end',
@@ -154,6 +155,27 @@ const BellaDB = {
     g[cat] = items;
     this._set(this.K.GALLERY, g);
   },
+
+  /* ── Portfólio de fotos ───────────────────────────────── */
+  DEFAULT_PORTFOLIO: [
+    { id:'pt1',  cat:'cilios',       label:'Extensão Volume Russo',    img:'', tall:true  },
+    { id:'pt2',  cat:'unhas',        label:'Nail Art Floral',          img:'', tall:false },
+    { id:'pt3',  cat:'sobrancelhas', label:'Micropigmentação Natural', img:'', tall:true  },
+    { id:'pt4',  cat:'cilios',       label:'Lash Lifting Curva C',     img:'', tall:false },
+    { id:'pt5',  cat:'unhas',        label:'Gel Francesinha',          img:'', tall:true  },
+    { id:'pt6',  cat:'sobrancelhas', label:'Henna Escura',             img:'', tall:false },
+    { id:'pt7',  cat:'cilios',       label:'Mega Volume',              img:'', tall:true  },
+    { id:'pt8',  cat:'unhas',        label:'Acrigel Rosa Nude',        img:'', tall:false },
+    { id:'pt9',  cat:'sobrancelhas', label:'Design + Linha',           img:'', tall:false },
+    { id:'pt10', cat:'unhas',        label:'Glitter Dourado',          img:'', tall:true  },
+    { id:'pt11', cat:'cilios',       label:'Fio a Fio Natural',        img:'', tall:false },
+    { id:'pt12', cat:'manicure',     label:'Gel Rosa Nude',            img:'', tall:false },
+  ],
+  getPortfolio() {
+    const saved = this._get(this.K.PORTFOLIO, null);
+    return saved !== null ? saved : this.DEFAULT_PORTFOLIO;
+  },
+  setPortfolio(items) { this._set(this.K.PORTFOLIO, items); },
 
   /* ── Cálculo de slots disponíveis ─────────────────────── */
   getAvailableSlots(dateStr, serviceName) {

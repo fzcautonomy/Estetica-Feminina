@@ -1,30 +1,19 @@
 /* ============================================================
    STUDIO BELLA — portfolio.js
    Grid masonry, filtros, lightbox, swipe gesture
-   PERSONALIZE: Adicione suas fotos reais em assets/portfolio/
 ============================================================ */
 
 'use strict';
 
-/* ── Dados do portfólio ──────────────────────────────────── */
-/*
-   PERSONALIZE: Troque os gradientes por src reais:
-   Ex: { src: 'assets/portfolio/cilios-1.jpg', ... }
-*/
-const PORTFOLIO_ITEMS = [
-  { id: 1,  cat: 'cilios',       label: 'Extensão Volume Russo',    gradient: 'linear-gradient(135deg,#f8c8d4,#e8a0b8)', tall: true },
-  { id: 2,  cat: 'unhas',        label: 'Nail Art Floral',          gradient: 'linear-gradient(135deg,#fdd5e0,#f4a7b9)' },
-  { id: 3,  cat: 'sobrancelhas', label: 'Micropigmentação Natural', gradient: 'linear-gradient(135deg,#f5e6da,#e8d0b8)', tall: true },
-  { id: 4,  cat: 'cilios',       label: 'Lash Lifting Curva C',     gradient: 'linear-gradient(135deg,#d4b8e0,#c9a0d8)' },
-  { id: 5,  cat: 'unhas',        label: 'Gel Francesinha',          gradient: 'linear-gradient(135deg,#fff,#f5e6da)', tall: true },
-  { id: 6,  cat: 'sobrancelhas', label: 'Henna Escura',             gradient: 'linear-gradient(135deg,#c9a86c,#a8874e)' },
-  { id: 7,  cat: 'cilios',       label: 'Mega Volume',              gradient: 'linear-gradient(135deg,#f4a7b9,#c9a86c)', tall: true },
-  { id: 8,  cat: 'unhas',        label: 'Acrigel Rosa Nude',        gradient: 'linear-gradient(135deg,#f9e0ea,#f0b8cc)' },
-  { id: 9,  cat: 'sobrancelhas', label: 'Design + Linha',           gradient: 'linear-gradient(135deg,#e8c8a0,#c9a86c)' },
-  { id: 10, cat: 'unhas',        label: 'Glitter Dourado',          gradient: 'linear-gradient(135deg,#ffd700,#c9a86c)', tall: true },
-  { id: 11, cat: 'cilios',       label: 'Fio a Fio Natural',        gradient: 'linear-gradient(135deg,#b8d4e8,#a0b8c8)' },
-  { id: 12, cat: 'sobrancelhas', label: 'Micropig Loira',           gradient: 'linear-gradient(135deg,#e8d4b8,#d4b890)' },
-];
+/* ── Gradientes de fallback por categoria ─────────────────── */
+const CAT_GRADIENTS = {
+  cilios:       'linear-gradient(135deg,#f8c8d4,#e8a0b8)',
+  unhas:        'linear-gradient(135deg,#fdd5e0,#f4a7b9)',
+  sobrancelhas: 'linear-gradient(135deg,#f5e6da,#e8d0b8)',
+  lash:         'linear-gradient(135deg,#d4b8e0,#c9a0d8)',
+  manicure:     'linear-gradient(135deg,#f9e0ea,#f0b8cc)',
+  depilacao:    'linear-gradient(135deg,#e8d4b8,#d4b890)',
+};
 
 /* ── Estado do lightbox ──────────────────────────────────── */
 let lbItems  = [];
@@ -53,11 +42,9 @@ let lbStartX = 0;
   /* ── Renderiza os itens reais ──────────────────────────── */
   function renderItems(filter) {
     activeFilter = filter;
-    const filtered = filter === 'all'
-      ? PORTFOLIO_ITEMS
-      : PORTFOLIO_ITEMS.filter(it => it.cat === filter);
+    const all      = BellaDB.getPortfolio();
+    const filtered = filter === 'all' ? all : all.filter(it => it.cat === filter);
 
-    /* Atualiza lista para lightbox */
     lbItems = filtered;
 
     grid.innerHTML = '';
@@ -69,10 +56,10 @@ let lbStartX = 0;
       el.setAttribute('aria-label', item.label);
       el.style.animationDelay = `${i * 0.06}s`;
 
-      /* Se tiver src real, usa img; caso contrário, div gradiente */
-      const mediaEl = item.src
-        ? `<img class="portfolio-item-img" src="${item.src}" alt="${item.label}" loading="lazy" />`
-        : `<div class="portfolio-item-img" style="background:${item.gradient};width:100%;aspect-ratio:${item.tall ? '3/5' : '3/4'};"></div>`;
+      const gradient = CAT_GRADIENTS[item.cat] || 'linear-gradient(135deg,#f8c8d4,#c9a86c)';
+      const mediaEl = item.img
+        ? `<img class="portfolio-item-img" src="${item.img}" alt="${item.label}" loading="lazy" />`
+        : `<div class="portfolio-item-img" style="background:${gradient};width:100%;aspect-ratio:${item.tall ? '3/5' : '3/4'};"></div>`;
 
       el.innerHTML = `
         ${mediaEl}
@@ -133,10 +120,11 @@ let lbStartX = 0;
     if (!item) return;
     lbImgWrap.classList.add('transitioning');
     setTimeout(() => {
-      if (item.src) {
-        lbImgWrap.innerHTML = `<img src="${item.src}" alt="${item.label}" style="border-radius:12px" />`;
+      const gradient = CAT_GRADIENTS[item.cat] || 'linear-gradient(135deg,#f8c8d4,#c9a86c)';
+      if (item.img) {
+        lbImgWrap.innerHTML = `<img src="${item.img}" alt="${item.label}" style="border-radius:12px" />`;
       } else {
-        lbImgWrap.innerHTML = `<div style="width:300px;height:400px;background:${item.gradient};border-radius:12px;display:flex;align-items:center;justify-content:center;"><span style="color:rgba(255,255,255,0.7);font-size:0.9rem;text-align:center;padding:20px">${item.label}</span></div>`;
+        lbImgWrap.innerHTML = `<div style="width:300px;height:400px;background:${gradient};border-radius:12px;display:flex;align-items:center;justify-content:center;"><span style="color:rgba(255,255,255,0.7);font-size:0.9rem;text-align:center;padding:20px">${item.label}</span></div>`;
       }
       if (lbCaption) lbCaption.textContent = `${item.label} (${lbIndex + 1}/${lbItems.length})`;
       lbImgWrap.classList.remove('transitioning');

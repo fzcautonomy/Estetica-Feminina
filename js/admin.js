@@ -268,6 +268,7 @@ const AdminApp = (() => {
         ${Object.entries(CAT_LABELS).map(([k,v],i) => `
           <button class="gal-cat-btn${i===0?' active':''}" data-cat="${k}">${v}</button>
         `).join('')}
+        <button class="gal-cat-btn" data-cat="portfolio">📸 Portfólio</button>
       </div>
       <div id="gal-content"></div>
     `;
@@ -276,7 +277,8 @@ const AdminApp = (() => {
       btn.addEventListener('click', () => {
         panel.querySelectorAll('.gal-cat-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        renderGalCategory(btn.dataset.cat);
+        if (btn.dataset.cat === 'portfolio') renderPortfolioAdmin();
+        else renderGalCategory(btn.dataset.cat);
       });
     });
 
@@ -433,6 +435,155 @@ const AdminApp = (() => {
         BellaDB.setGalleryCategory(btn.dataset.cat, filtered);
         renderGalCategory(btn.dataset.cat);
       });
+    });
+  }
+
+  /* ── Admin: Portfólio ──────────────────────────────────── */
+  const PT_CAT_OPTIONS = [
+    ['cilios','Extensão de Cílios'], ['unhas','Nail Designer'],
+    ['sobrancelhas','Sobrancelhas'], ['lash','Lash Lifting'],
+    ['manicure','Manicure & Pedicure'], ['depilacao','Depilação'],
+  ];
+
+  function renderPortfolioAdmin() {
+    const content = document.getElementById('gal-content');
+    if (!content) return;
+    const items = BellaDB.getPortfolio();
+
+    content.innerHTML = `
+      <div class="gal-items" id="portfolio-admin-list">
+        ${items.map(item => `
+          <div class="gal-item" data-pt-id="${item.id}">
+            <div class="gal-item-preview">
+              ${item.img ? `<img src="${esc(item.img)}" alt="${esc(item.label)}" />` : `<div class="gal-no-img">📷<br/>Sem foto</div>`}
+            </div>
+            <div class="gal-item-fields">
+              <input type="text" placeholder="Legenda" value="${esc(item.label)}" data-pt-field="label" data-pt-id="${item.id}" />
+              <select data-pt-field="cat" data-pt-id="${item.id}">
+                ${PT_CAT_OPTIONS.map(([v,l]) => `<option value="${v}"${item.cat===v?' selected':''}>${l}</option>`).join('')}
+              </select>
+              <label class="wday-label" style="font-size:0.85rem">
+                <input type="checkbox" data-pt-field="tall" data-pt-id="${item.id}" ${item.tall?'checked':''} />
+                Foto alta (retrato)
+              </label>
+              <label class="adm-btn adm-btn-sm gal-upload-label" title="Enviar foto para nuvem">
+                📎 Enviar foto
+                <input type="file" accept="image/*" class="pt-file-input" data-pt-id="${item.id}" style="display:none" />
+              </label>
+              ${item.img ? `<span class="gal-file-name" style="color:#5aab5a">✓ Foto na nuvem</span>` : ''}
+              <button class="adm-btn adm-btn-danger adm-btn-xs" data-del-pt="${item.id}">🗑 Remover</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="gal-actions">
+        <button class="adm-btn adm-btn-primary" id="btn-add-portfolio">+ Adicionar foto</button>
+        <button class="adm-btn adm-btn-success" id="btn-save-portfolio">💾 Salvar portfólio</button>
+      </div>
+    `;
+
+    /* Live edit campos de texto/select/checkbox */
+    content.querySelectorAll('[data-pt-field]').forEach(el => {
+      el.addEventListener('change', () => {
+        const id    = el.dataset.ptId;
+        const field = el.dataset.ptField;
+        const all   = BellaDB.getPortfolio();
+        const item  = all.find(it => it.id === id);
+        if (!item) return;
+        if (field === 'tall') item.tall = el.checked;
+        else item[field] = el.value;
+        BellaDB.setPortfolio(all);
+      });
+    });
+
+    /* Upload Cloudinary para cada item do portfólio */
+    content.querySelectorAll('.pt-file-input').forEach(fileInput => {
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        const ptId        = fileInput.dataset.ptId;
+        const row         = fileInput.closest('.gal-item');
+        const uploadLabel = fileInput.closest('.gal-upload-label');
+
+        let nameLabel = row?.querySelector('.gal-file-name');
+        if (!nameLabel) {
+          nameLabel = document.createElement('span');
+          nameLabel.className = 'gal-file-name';
+          uploadLabel.insertAdjacentElement('afterend', nameLabel);
+        }
+
+        nameLabel.textContent = '⏳ Enviando...';
+        nameLabel.style.color = 'var(--gold-dark)';
+        if (uploadLabel) uploadLabel.style.opacity = '0.6';
+
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'estetica-feminina');
+
+          const res = await fetch('https://api.cloudinary.com/v1_1/derwc335n/image/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          if (!res.ok) throw new Error('upload falhou');
+          const data = await res.json();
+          const url  = data.secure_url;
+
+          const all  = BellaDB.getPortfolio();
+          const item = all.find(it => it.id === ptId);
+          if (item) { item.img = url; BellaDB.setPortfolio(all); }
+
+          if (row) {
+            const preview = row.querySelector('.gal-item-preview');
+            if (preview) preview.innerHTML = `<img src="${url}" alt="" />`;
+          }
+
+          nameLabel.textContent = '✓ Foto enviada!';
+          nameLabel.style.color = '#5aab5a';
+          showToast('Foto do portfólio enviada! ✓');
+        } catch {
+          nameLabel.textContent = '✗ Erro ao enviar.';
+          nameLabel.style.color = '#e05a5a';
+          showToast('Erro ao enviar. Verifique a conexão.');
+        } finally {
+          if (uploadLabel) uploadLabel.style.opacity = '1';
+          fileInput.value = '';
+        }
+      });
+    });
+
+    /* Remover item */
+    content.querySelectorAll('[data-del-pt]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!confirm('Remover esta foto do portfólio?')) return;
+        BellaDB.setPortfolio(BellaDB.getPortfolio().filter(it => it.id !== btn.dataset.delPt));
+        renderPortfolioAdmin();
+      });
+    });
+
+    /* Adicionar novo item */
+    content.querySelector('#btn-add-portfolio')?.addEventListener('click', () => {
+      const all = BellaDB.getPortfolio();
+      all.push({ id: Date.now().toString(36), cat: 'cilios', label: 'Nova foto', img: '', tall: false });
+      BellaDB.setPortfolio(all);
+      renderPortfolioAdmin();
+    });
+
+    /* Salvar (coleta estado atual de todos os campos) */
+    content.querySelector('#btn-save-portfolio')?.addEventListener('click', () => {
+      const all = BellaDB.getPortfolio();
+      content.querySelectorAll('.gal-item[data-pt-id]').forEach(row => {
+        const item = all.find(it => it.id === row.dataset.ptId);
+        if (!item) return;
+        const labelEl = row.querySelector('[data-pt-field="label"]');
+        const catEl   = row.querySelector('[data-pt-field="cat"]');
+        const tallEl  = row.querySelector('[data-pt-field="tall"]');
+        if (labelEl) item.label = labelEl.value;
+        if (catEl)   item.cat   = catEl.value;
+        if (tallEl)  item.tall  = tallEl.checked;
+      });
+      BellaDB.setPortfolio(all);
+      showToast('Portfólio salvo com sucesso! ✓');
     });
   }
 
